@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>KastorJS tests</title>
+  <link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/mocha/2.0.1/mocha.css">
+</head>
+<body>
+  <section ks-gallery>
+      <a href="" title="" ks-img="//placehold.it/600x600/322267">
+          <img src="//placehold.it/150x150/322267" alt="">
+      </a>
+      <a href="" title="" ks-img="//placehold.it/600x600/522667">
+          <img src="//placehold.it/150x150/522667" alt="">
+      </a>
+      <a href="" title="" ks-img="//placehold.it/600x600/231637">
+          <img src="//placehold.it/150x150/231637" alt="">
+      </a>
+      <a href="" title="" ks-video="http://techslides.com/demos/sample-videos/small.mp4">
+          <img src="//placehold.it/150x150/821667" alt="">
+      </a>
+      <a href="" title="" ks-img="//placehold.it/600x600/112227">
+          <img src="//placehold.it/150x150/112227" alt="">
+      </a>
+      <a href="" title="" ks-iframe="//www.youtube.com/embed/Gytrpl5IaN4">
+          <img src="//placehold.it/150x150/821667" alt="">
+      </a>
+      <a href="" title="" ks-html="./example.html">
+          <img src="//placehold.it/150x150/1116E7" alt="">
+      </a>
+      <a href="" title="" ks-img="//placehold.it/600x600/326267">
+          <img src="//placehold.it/150x150/326267" alt="">
+      </a>
+  </section>
+  <div id="mocha"><p><a href=".">Index</a></p></div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/mocha/2.0.1/mocha.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/chai/1.9.2/chai.js"></script>
+  <script src="app.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="./test/kastor.test.js"></script>
+  <script>mocha.run();</script>
+</body>
+</html>
