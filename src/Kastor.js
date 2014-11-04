@@ -24,6 +24,9 @@
 
         // get all media items
         var nodes = this.$$getNodes();
+
+        //remove or not pager
+        this.$$checkNumber(nodes);
         // assign an UID for each item
         this.$$setUid(nodes);
     };
@@ -38,8 +41,8 @@
             + '<iframe width="640" height="390" src="" frameborder="0" allowfullscreen></iframe>'
             + '<div></div>'
             + '</div>'
-            + '<a href="" ks-prev title="">‹</a>'
-            + '<a href="" ks-next title="">›</a>';
+            + '<a href="" ks-pager ks-prev title="">‹</a>'
+            + '<a href="" ks-pager ks-next title="">›</a>';
         document.body.appendChild(viewerNode);
 
         document.querySelector('[ks-next]')
@@ -62,6 +65,14 @@
         }
 
         return nodes;
+    };
+
+    Kastor.prototype.$$checkNumber = function(nodes) {
+
+        if(nodes.length<=1){
+            this.viewer.querySelector('[ks-prev]').style.display = "none";
+            this.viewer.querySelector('[ks-next]').style.display = "none";
+        }
     };
 
     Kastor.prototype.$$setUid = function(nodes) {
@@ -140,8 +151,10 @@
         event ? event.preventDefault() : '';
         if(this.current < this.uid-1) {
             var node = document.querySelector('[ks-uid="'+(++this.current)+'"]');
-            this.$$loadMedia(node);
+        }else{
+            var node = document.querySelector('[ks-uid="1"]');
         }
+        this.$$loadMedia(node);
     };
 
     Kastor.prototype.$$prev = function(event) {
@@ -149,8 +162,10 @@
         event ? event.preventDefault() : '';
         if(this.current > 1) {
             var node = document.querySelector('[ks-uid="'+(--this.current)+'"]');
-            this.$$loadMedia(node);
+        }else{
+            var node = document.querySelector('[ks-uid="'+(this.uid-1)+'"]');
         }
+        this.$$loadMedia(node);
     };
 
     /** 
