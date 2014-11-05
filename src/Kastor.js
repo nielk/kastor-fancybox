@@ -11,6 +11,9 @@
         // add the lightbox to body
         this.$$addViewer();
 
+        // set the listeners
+        this.$$addListeners();
+
         // init somes properties use in methods
         this.uid = 1;
         this.current = 1;
@@ -27,6 +30,7 @@
 
         //remove or not pager
         this.$$checkNumber(nodes);
+        
         // assign an UID for each item
         this.$$setUid(nodes);
     };
@@ -34,17 +38,29 @@
     Kastor.prototype.$$addViewer = function() {
 
         var viewerNode = document.createElement('article');
-        viewerNode.setAttribute('ks-viewer', '');
-        viewerNode.innerHTML = '<div class="ks-container">'
-            + '<img src="" alt="">'
-            + '<video src="" autoplay></video>'
-            + '<iframe width="640" height="390" src="" frameborder="0" allowfullscreen></iframe>'
-            + '<div></div>'
-            + '</div>'
-            + '<a href="" ks-pager ks-prev title="">‹</a>'
-            + '<a href="" ks-pager ks-next title="">›</a>';
-        document.body.appendChild(viewerNode);
 
+        viewerNode.setAttribute('ks-viewer', '');
+        viewerNode.innerHTML = ['<div class="ks-container">',
+                                '<img src="" alt="">',
+                                '<video src="" autoplay></video>',
+                                '<iframe width="640" height="390" src="" frameborder="0" allowfullscreen></iframe>',
+                                '<div></div>',
+                                '</div>',
+                                '<a href="" ks-close title=""></a>',
+                                '<a href="" ks-prev title=""></a>',
+                                '<a href="" ks-next title=""></a>',
+                                '<div class="spinner">',
+                                '<div class="bounce1"></div>',
+                                '<div class="bounce2"></div>',
+                                '<div class="bounce3"></div>',
+                                '<div class="bounce4"></div>',
+                                '</div>'].join('');
+        document.body.appendChild(viewerNode);
+    };
+
+    Kastor.prototype.$$addListeners = function() {
+
+        var self = this;
         document.querySelector('[ks-next]')
             .addEventListener('click', this.$$next.bind(this), false);
 
@@ -53,7 +69,32 @@
 
         document.querySelector('.ks-container')
             .addEventListener('click', this.$$unloadMedia.bind(this), false);
-    }
+
+        document.onkeydown = function(event) {
+
+            event = event || window.event;
+
+            switch(event.which || event.keyCode) {
+                // esc
+                case 27:
+                self.$$unloadMedia();
+                break;
+
+                // right
+                case 39:
+                self.$$next();
+                break;
+
+                // left
+                case 37:
+                self.$$prev();
+                break;
+
+                default:
+                return;
+            }
+        };
+    };
 
     Kastor.prototype.$$getNodes = function() {
 
@@ -98,25 +139,36 @@
         this.$$unloadMedia();
 
         this.viewer.setAttribute('ks-status', 'opened');
+        var spinner = this.viewer.querySelector('.spinner');
+        spinner.setAttribute('class', 'spinner loading');
 
         if(img !== null) {
 
             this.imgNode.setAttribute('class', '');
-            var loadIt = function loadIt() {
-                this.imgNode.setAttribute('src', img);
-                this.imgNode.addEventListener('load', function(e) {
-                    this.setAttribute('class', 'show');
-                });
-            }
-            setTimeout(loadIt.bind(this), 1000);
-            
+            this.imgNode.setAttribute('src', img);
+
+            this.imgNode.addEventListener('load', function() {
+                spinner.setAttribute('class', 'spinner ');
+                this.setAttribute('class', 'show');
+            });
         } else if(video !== null) {
+
             this.videoNode.setAttribute('src', video);
-            this.videoNode.setAttribute('class', 'show');
+
+            this.videoNode.onloadeddata = function() {
+                spinner.setAttribute('class', 'spinner ');
+                this.setAttribute('class', 'show');
+            };
         } else if(iframe !== null) {
+
             this.iframeNode.setAttribute('src', iframe);
-            this.iframeNode.setAttribute('class', 'show');
+            this.iframeNode.onload = function() {
+                spinner.setAttribute('class', 'spinner ');
+                this.setAttribute('class', 'show');
+                this.onload = null;
+            };
         } else if(html !== null) {
+
             var self = this;
             var req = new XMLHttpRequest();
             req.open('GET', html, true);
@@ -125,6 +177,7 @@
                     return;
                 }
                 self.htmlNode.innerHTML += req.responseText;
+                spinner.setAttribute('class', 'spinner ');
                 self.htmlNode.setAttribute('class', 'show');
             };
             req.send();
@@ -133,7 +186,13 @@
         this.current = uid;
     };
 
-    Kastor.prototype.$$unloadMedia = function() {
+    Kastor.prototype.$$unloadMedia = function(event) {
+
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        } else if(event) {
+            event.returnValue = false;
+        }
 
         this.imgNode.setAttribute('src','');
         this.videoNode.setAttribute('src','');
@@ -148,22 +207,36 @@
 
     Kastor.prototype.$$next = function(event) {
 
-        event ? event.preventDefault() : '';
+        var node;
+
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        } else if(event) {
+            event.returnValue = false;
+        }
+
         if(this.current < this.uid-1) {
-            var node = document.querySelector('[ks-uid="'+(++this.current)+'"]');
-        }else{
-            var node = document.querySelector('[ks-uid="1"]');
+            node = document.querySelector('[ks-uid="'+(++this.current)+'"]');
+        } else {
+            node = document.querySelector('[ks-uid="1"]');
         }
         this.$$loadMedia(node);
     };
 
     Kastor.prototype.$$prev = function(event) {
 
-        event ? event.preventDefault() : '';
+        var node;
+
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        } else if(event) {
+            event.returnValue = false;
+        }
+
         if(this.current > 1) {
-            var node = document.querySelector('[ks-uid="'+(--this.current)+'"]');
-        }else{
-            var node = document.querySelector('[ks-uid="'+(this.uid-1)+'"]');
+            node = document.querySelector('[ks-uid="'+(--this.current)+'"]');
+        } else {
+            node = document.querySelector('[ks-uid="'+(this.uid-1)+'"]');
         }
         this.$$loadMedia(node);
     };

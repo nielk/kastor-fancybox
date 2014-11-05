@@ -1,0 +1,108 @@
+$bs:    20px; // baseline
+
+[ks-viewer] {
+    position: fixed;
+    display: table;
+    top: -100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    .ks-container {
+        display: table-cell;
+        vertical-align: middle;
+        height: 100%;
+        position: relative;
+        height: 0;
+        width: 100%;
+        bottom: 0;
+        padding-top: 56.25%;
+        @media (min-width: 1200px) {
+            padding-top: 50%;
+        }
+        margin: 0;
+        overflow: hidden;
+    }
+
+    img,
+    iframe,
+    video,
+    .ks-container div {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: block;
+        max-width: 92%;
+        max-height: 92%;
+        margin: auto;
+    }
+
+    .ks-container div {
+        display: none;
+        width: 75%;
+        max-height: 75%;
+        max-width: 650px;
+        padding: $bs*2;
+    }
+
+    /**
+     * Status
+     **/
+    &[ks-status='opened'] {
+        top: 0;
+        opacity: 1;
+    }
+
+    img,
+    iframe,
+    video,
+    .ks-container div {
+        display: none;
+
+        &.show {
+            display: block;
+        }
+    }
+
+    /**
+     * arrow next/prev & close ico
+     **/
+    & [ks-close],
+    & [ks-prev],
+    & [ks-next] {
+        position: absolute;
+        text-decoration: none;
+    }
+
+    & [ks-prev],
+    & [ks-next] {
+        top: 45%;
+    }
+
+    & [ks-close] {
+        top: $bs*2;
+        right: $bs*2;
+
+        &:before {
+            content: 'X';
+        }
+    }
+
+    & [ks-prev] {
+        left: $bs*2;
+        &:before {
+            content: '‹';
+        }
+    }
+
+    & [ks-next] {
+        right: $bs*2;
+        &:before {
+            content: '›';
+        }
+    }
+}

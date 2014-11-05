@@ -82,7 +82,7 @@ gulp.task('jslint', function() {
 });
 
 gulp.task('sass', function () {
-    gulp.src(path.src + '/style.scss')
+    gulp.src(path.src + '/*.scss')
         .pipe(sass())
         .pipe(gulp.dest(path.dist))
         .pipe(reload({stream:true}));
@@ -107,6 +107,17 @@ gulp.task('template', function(){
 gulp.task('libraries', function(){
     gulp.src(path.libs + '/**.*')
         .pipe(gulp.dest(path.dist + '/libs'))
+        .pipe(reload({stream:true}));
+});
+
+/**
+ * @name: Fonts taks
+ * @doc:  just copy fonts files 
+ * from src/ into /dist
+ **/
+gulp.task('fonts', function(){
+    gulp.src(path.src + '/icomoon/**/*')
+        .pipe(gulp.dest(path.dist + '/icomoon'))
         .pipe(reload({stream:true}));
 });
 
@@ -153,6 +164,7 @@ gulp.task('default', ['clean'], function() {
     gulp.start('javascript-concat');
     gulp.start('jslint');
     gulp.start('sass');
+    gulp.start('fonts');
     gulp.start('libraries');
     gulp.start('test');
     gulp.start('browser-sync');
